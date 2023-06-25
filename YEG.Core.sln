@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{931DBF1A-FD0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{61F25DE7-26C6-401B-84C5-67ADF8A5BC98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YEG.Core", "YEG.Core\YEG.Core.csproj", "{CAAD62DA-99CA-49DB-B93C-D2F70B55850D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YEG.Core", "src\YEG.Core\YEG.Core.csproj", "{CAAD62DA-99CA-49DB-B93C-D2F70B55850D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yeg.Utilities", "Yeg.Utilities\Yeg.Utilities.csproj", "{81D8D74C-19B1-4507-B226-0D410DDA1ED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yeg.Utilities", "src\Yeg.Utilities\Yeg.Utilities.csproj", "{81D8D74C-19B1-4507-B226-0D410DDA1ED2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

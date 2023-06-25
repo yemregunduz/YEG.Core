@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Yeg.Utilities.RegularExpressions
+namespace Yeg.Utilities.Helpers
 {
     public static partial class RegexHelper
     {
