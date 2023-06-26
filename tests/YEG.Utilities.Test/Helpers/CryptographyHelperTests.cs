@@ -2,7 +2,7 @@
 using Yeg.Utilities.Helpers;
 using Yeg.Utilities.Options;
 
-namespace YEG.Utilities.Test
+namespace YEG.Utilities.Test.Helpers
 {
     public class CryptographyHelperTests
     {
@@ -46,7 +46,7 @@ namespace YEG.Utilities.Test
         [Fact]
         public void Encrypt_And_Decrypt_Empty_Text()
         {
-            var symmetricAlgorithm = Aes.Create(); 
+            var symmetricAlgorithm = Aes.Create();
             var securityKey = "mysupersecretkey";
             var plainText = "";
             var helper = CryptographyHelper.CreateInstance(symmetricAlgorithm, securityKey);
