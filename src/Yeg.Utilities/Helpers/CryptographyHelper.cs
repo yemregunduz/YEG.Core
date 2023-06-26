@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Yeg.Utilities.Options;
 
 namespace Yeg.Utilities.Helpers
 {
@@ -8,43 +9,67 @@ namespace Yeg.Utilities.Helpers
     /// </summary>
     public class CryptographyHelper
     {
+        private readonly CryptographyHelperOptions _options;
+
         /// <summary>
-        /// Encrypts the specified plain text using the provided encryption key and symmetric encryption algorithm.
+        /// Initializes a new instance of the CryptographyHelper class with the specified options.
+        /// </summary>
+        /// <param name="cryptographyHelperOptions">The options for configuring the CryptographyHelper.</param>
+        public CryptographyHelper(CryptographyHelperOptions cryptographyHelperOptions)
+        {
+            _options = cryptographyHelperOptions ?? 
+                throw new ArgumentNullException(nameof(cryptographyHelperOptions));
+            ValidateSecurityKeySize();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CryptographyHelper class with default options.
+        /// </summary>
+        public CryptographyHelper()
+        {
+            _options = new CryptographyHelperOptions();
+            ValidateSecurityKeySize();
+        }
+
+        /// <summary>
+        /// Creates a new instance of the CryptographyHelper class using the default constructor.
+        /// </summary>
+        /// <returns>A new instance of the CryptographyHelper class.</returns>
+        public static CryptographyHelper CreateInstance()
+        {
+            return new CryptographyHelper();
+        }
+
+        /// <summary>
+        /// Creates a new instance of the CryptographyHelper class with custom options.
+        /// </summary>
+        /// <param name="symmetricAlgorithm">The symmetric algorithm to use for encryption and decryption.</param>
+        /// <param name="securityKey">The security key used for encryption and decryption.</param>
+        /// <param name="autoCompleteForSecurityKey">A flag indicating whether to auto-complete the security key if its size is not valid.</param>
+        /// <returns>A new instance of the CryptographyHelper class.</returns>
+        public static CryptographyHelper CreateInstance(
+            SymmetricAlgorithm symmetricAlgorithm,
+            string securityKey =  "mysupersecretkey", 
+            bool autoCompleteForSecurityKey = true
+            )
+        {
+            CryptographyHelperOptions options = new(symmetricAlgorithm,securityKey,autoCompleteForSecurityKey);
+            return new CryptographyHelper(options);
+        }
+
+        /// <summary>
+        /// Encrypts the specified plain text using the configured algorithm and security key.
         /// </summary>
         /// <param name="plainText">The plain text to encrypt.</param>
-        /// <param name="key">The encryption key.</param>
-        /// <param name="algorithm">The symmetric encryption algorithm.</param>
-        /// <param name="autoCompleteForKey">Optional. Specifies whether to auto-complete the key size if it does not match the desired key size of the algorithm. Default is false.</param>
         /// <returns>The encrypted text.</returns>
-        /// <exception cref="ArgumentException">Thrown when the plain text or encryption key is null or empty.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the encryption algorithm is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when the algorithm is not a symmetric encryption algorithm.</exception>
-        /// <exception cref="ArgumentException">Thrown when the key size does not match the desired key size of the algorithm, and auto-completion is not enabled.</exception>
-        public static string Encrypt(string plainText, string key, SymmetricAlgorithm algorithm,bool autoCompleteForKey = false)
+        public string Encrypt(string plainText)
         {
-            if (string.IsNullOrEmpty(plainText))
-                throw new ArgumentException("Plain text cannot be null or empty.", nameof(plainText));
-
-            if (string.IsNullOrEmpty(key))
-                throw new ArgumentException("Encryption key cannot be null or empty.", nameof(key));
-
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
-
-            if (!IsKeySizeValid(key, algorithm.KeySize))
-            {
-                if (autoCompleteForKey)
-                    key = AutoCompleteKeySize(key, algorithm.KeySize);
-                else
-                    throw new ArgumentException($"Algorithm key size must be {algorithm.KeySize}", nameof(algorithm));
-            }
-
 
             byte[] encryptedBytes;
 
-            using (algorithm)
+            using (var algorithm = _options.Algorithm)
             {
-                algorithm.Key = Encoding.UTF8.GetBytes(key);
+                algorithm.Key = Encoding.UTF8.GetBytes(_options.SecurityKey);
                 algorithm.Mode = CipherMode.CBC;
                 algorithm.Padding = PaddingMode.PKCS7;
 
@@ -68,38 +93,15 @@ namespace Yeg.Utilities.Helpers
         }
 
         /// <summary>
-        /// Decrypts the specified encrypted text using the provided encryption key and symmetric encryption algorithm.
+        /// Decrypts the specified encrypted text using the configured algorithm and security key.
         /// </summary>
         /// <param name="encryptedText">The encrypted text to decrypt.</param>
-        /// <param name="key">The encryption key.</param>
-        /// <param name="algorithm">The symmetric encryption algorithm.</param>
-        /// <param name="autoCompleteForKey">Optional. Specifies whether to auto-complete the key size if it does not match the desired key size of the algorithm. Default is false.</param>
         /// <returns>The decrypted text.</returns>
-        /// <exception cref="ArgumentException">Thrown when the encrypted text or encryption key is null or empty.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the encryption algorithm is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when the algorithm is not a symmetric encryption algorithm.</exception>
-        /// <exception cref="ArgumentException">Thrown when the key size does not match the desired key size of the algorithm, and auto-completion is not enabled.</exception>
-        public static string Decrypt(string encryptedText, string key, SymmetricAlgorithm algorithm,bool autoCompleteForKey = false)
+        public string Decrypt(string encryptedText)
         {
-            if (string.IsNullOrEmpty(encryptedText))
-                throw new ArgumentException("Encrypted text cannot be null or empty.", nameof(encryptedText));
-
-            if (string.IsNullOrEmpty(key))
-                throw new ArgumentException("Encryption key cannot be null or empty.", nameof(key));
-
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
-
-            if (!IsKeySizeValid(key, algorithm.KeySize))
-            {
-                if (autoCompleteForKey)
-                    key = AutoCompleteKeySize(key, algorithm.KeySize);
-                else
-                    throw new ArgumentException($"Algorithm key size must be {algorithm.KeySize}", nameof(algorithm));
-            }
 
             byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
-            byte[] iv = new byte[algorithm.BlockSize / 8];
+            byte[] iv = new byte[_options.Algorithm.BlockSize / 8];
             byte[] cipherBytes = new byte[encryptedBytes.Length - iv.Length];
 
             Array.Copy(encryptedBytes, iv, iv.Length);
@@ -107,9 +109,9 @@ namespace Yeg.Utilities.Helpers
 
             string decryptedText;
 
-            using (algorithm)
+            using (var algorithm = _options.Algorithm)
             {
-                algorithm.Key = Encoding.UTF8.GetBytes(key);
+                algorithm.Key = Encoding.UTF8.GetBytes(_options.SecurityKey);
                 algorithm.IV = iv;
                 algorithm.Mode = CipherMode.CBC;
                 algorithm.Padding = PaddingMode.PKCS7;
@@ -128,33 +130,41 @@ namespace Yeg.Utilities.Helpers
         }
 
         /// <summary>
-        /// Checks whether the key size is valid for the specified algorithm.
+        /// Verifies whether the decrypted text matches the original plain text.
         /// </summary>
-        /// <param name="key">The encryption key.</param>
-        /// <param name="desiredKeySize">The desired key size in bits.</param>
-        /// <returns><c>true</c> if the key size is valid; otherwise, <c>false</c>.</returns>
-        private static bool IsKeySizeValid(string key, int desiredKeySize)
+        /// <param name="plainText">The original plain text.</param>
+        /// <param name="encryptedText">The encrypted text to verify.</param>
+        /// <returns>True if the decrypted text matches the original plain text; otherwise, false.</returns>
+        public bool VerifyEncyrptedText(string plainText, string encryptedText)
         {
-            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-            return keyBytes.Length == desiredKeySize / 8;
+            if (plainText is null || encryptedText is null)
+                return false;
+            
+            return Decrypt(encryptedText) == plainText;
         }
 
-        /// <summary>
-        /// Auto-completes or trims the key to match the desired key size.
-        /// </summary>
-        /// <param name="key">The encryption key.</param>
-        /// <param name="desiredKeySize">The desired key size in bits.</param>
-        /// <returns>The updated key with the desired key size.</returns>
-        private static string AutoCompleteKeySize(string key, int desiredKeySize)
+        private void ValidateSecurityKeySize()
         {
-            int keySizeInBytes = desiredKeySize / 8;
+            if (!_options.IsSecurityKeySizeValid)
+            {
+                if (_options.AutoCompleteForSecurityKey)
+                    _options.SecurityKey = CompleteSecurityKey();
 
-            if (key.Length > keySizeInBytes)
-                return key.Substring(0, keySizeInBytes);
-            else if (key.Length < keySizeInBytes)
-                return key.PadRight(keySizeInBytes, '0');
+                else
+                    throw new ArgumentException($"Algorithm key size must be {_options.AlgorithmKeySize}", nameof(_options.Algorithm));
+            }
+        }
+
+        private string CompleteSecurityKey()
+        {
+            int keySizeInBytes = _options.AlgorithmKeySize / 8;
+
+            if (_options.SecurityKey.Length > keySizeInBytes)
+                return _options.SecurityKey[..keySizeInBytes];
+            else if (_options.SecurityKey.Length < keySizeInBytes)
+                return _options.SecurityKey.PadRight(keySizeInBytes, '0');
             else
-                return key;
+                return _options.SecurityKey;
         }
     }
 }
