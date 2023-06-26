@@ -64,6 +64,8 @@ namespace Yeg.Utilities.Helpers
         /// <returns>The encrypted text.</returns>
         public string Encrypt(string plainText)
         {
+            if(plainText is null)
+                throw new ArgumentNullException(nameof(plainText));
 
             byte[] encryptedBytes;
 
@@ -99,6 +101,8 @@ namespace Yeg.Utilities.Helpers
         /// <returns>The decrypted text.</returns>
         public string Decrypt(string encryptedText)
         {
+            if (encryptedText is null)
+                throw new ArgumentNullException(nameof(encryptedText));
 
             byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
             byte[] iv = new byte[_options.Algorithm.BlockSize / 8];
