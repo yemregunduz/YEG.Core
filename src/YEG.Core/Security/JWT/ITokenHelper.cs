@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YEG.Core.Domain.Entities.Security;
+﻿using YEG.Core.Domain.Entities.Security;
 
 namespace YEG.Core.Security.JWT
 {
