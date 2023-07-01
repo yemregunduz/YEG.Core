@@ -3,9 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Yeg.Utilities.Helpers;
-using Yeg.Utilities.Extensions;
 using YEG.Core.Domain.Entities.Security;
 using System.Security.Cryptography;
+using Yeg.Utilities.Extensions.Claims;
 
 namespace YEG.Core.Security.JWT
 {

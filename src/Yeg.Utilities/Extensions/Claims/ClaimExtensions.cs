@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Yeg.Utilities.Extensions
+namespace Yeg.Utilities.Extensions.Claims
 {
     public static class ClaimExtensions
     {
