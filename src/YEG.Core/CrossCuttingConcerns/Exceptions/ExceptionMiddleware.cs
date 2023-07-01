@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace YEG.Core.CrossCuttingConcerns.Exceptions
@@ -30,7 +30,8 @@ namespace YEG.Core.CrossCuttingConcerns.Exceptions
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-
+            if(exception.GetType() == typeof(ValidationException))
+                return CreateValidationException(context, exception);
             if (exception.GetType() == typeof(BusinessException)) 
                 return CreateBusinessException(context, exception);
             if (exception.GetType() == typeof(AuthorizationException))
@@ -63,6 +64,22 @@ namespace YEG.Core.CrossCuttingConcerns.Exceptions
                 Title = "Business exception",
                 Detail = exception.Message,
                 Instance = context.Request.Path
+            }.ToString());
+        }
+
+        private Task CreateValidationException(HttpContext context, Exception exception)
+        {
+            context.Response.StatusCode = Convert.ToInt32(HttpStatusCode.BadRequest);
+            object errors = ((ValidationException)exception).Errors;
+
+            return context.Response.WriteAsync(new ValidationProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Type = "https://example.com/probs/validation",
+                Title = "Validation error(s)",
+                Detail = "",
+                Instance = context.Request.Path,
+                Errors = errors
             }.ToString());
         }
 
