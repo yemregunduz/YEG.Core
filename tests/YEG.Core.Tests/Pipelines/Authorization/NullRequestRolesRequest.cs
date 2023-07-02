@@ -10,6 +10,6 @@ namespace YEG.Core.Tests.Pipelines.Authorization
 {
     public class NullRequestRolesRequest : IRequest<string>, ISecuredRequest
     {
-        public string[] Roles => null;
+        public string[] Roles { get; } = null;
     }
 }

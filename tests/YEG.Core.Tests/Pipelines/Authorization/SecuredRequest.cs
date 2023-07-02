@@ -10,6 +10,6 @@ namespace YEG.Core.Tests.Pipelines.Authorization
 {
     public class SecuredRequest : IRequest<string>, ISecuredRequest
     {
-        public string[] Roles { get; } = new List<string> { "Role2", "Role3" }.ToArray();
+        public string[] Roles { get; } = new string[] {"Role2","Role3" };
     }
 }
