@@ -20,10 +20,10 @@ namespace YEG.Core.Pipelines.Authorization
         {
             List<string>? roleClaims = _httpContextAccessor.HttpContext.User.ClaimRoles() ?? throw new AuthorizationException("Claims Not Found");
 
-            bool isAuthorized =
-                roleClaims.FirstOrDefault(roleClaim => request.Roles.Any(role => role == roleClaim)).IsNullOrEmpty();
+            bool isAuthorized = 
+                request.Roles is null || !request.Roles.Any() || request.Roles.Any(role => roleClaims?.Contains(role) == true);
 
-            if (isAuthorized)
+            if (!isAuthorized)
                 throw new AuthorizationException("You are not authorized.");
 
             TResponse response = await next();

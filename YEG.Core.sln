@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yeg.Utilities", "src\Yeg.Ut
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YEG.Utilities.Test", "tests\YEG.Utilities.Test\YEG.Utilities.Test.csproj", "{B0597CF4-DD9E-48C4-ADA9-58FDB462EF0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YEG.Core.Tests", "tests\YEG.Core.Tests\YEG.Core.Tests.csproj", "{FDDAD6AC-C109-4145-82B0-240A2F7431F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{B0597CF4-DD9E-48C4-ADA9-58FDB462EF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0597CF4-DD9E-48C4-ADA9-58FDB462EF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0597CF4-DD9E-48C4-ADA9-58FDB462EF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDDAD6AC-C109-4145-82B0-240A2F7431F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDDAD6AC-C109-4145-82B0-240A2F7431F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDDAD6AC-C109-4145-82B0-240A2F7431F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDDAD6AC-C109-4145-82B0-240A2F7431F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{CAAD62DA-99CA-49DB-B93C-D2F70B55850D} = {931DBF1A-FD01-4107-8B59-E86238DA7156}
 		{81D8D74C-19B1-4507-B226-0D410DDA1ED2} = {931DBF1A-FD01-4107-8B59-E86238DA7156}
 		{B0597CF4-DD9E-48C4-ADA9-58FDB462EF0E} = {61F25DE7-26C6-401B-84C5-67ADF8A5BC98}
+		{FDDAD6AC-C109-4145-82B0-240A2F7431F7} = {61F25DE7-26C6-401B-84C5-67ADF8A5BC98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CBAECEC-0AF4-4907-8859-BD0EA0F0C690}
