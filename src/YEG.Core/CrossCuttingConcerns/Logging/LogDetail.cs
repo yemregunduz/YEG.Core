@@ -10,14 +10,14 @@ namespace YEG.Core.CrossCuttingConcerns.Logging
     {
         public string FullName { get; set; }
         public string MethodName { get; set; }
-        public string User { get; set; }
+        public string UserId { get; set; }
         public List<LogParameter> LogParameters { get; set; }
 
-        public LogDetail(string fullName,string methodName, string user, List<LogParameter> logParameters)
+        public LogDetail(string fullName,string methodName, string userId, List<LogParameter> logParameters)
         {
             FullName = fullName;
             MethodName = methodName;
-            User = user;
+            UserId = userId;
             LogParameters = logParameters;
         }
         public LogDetail()

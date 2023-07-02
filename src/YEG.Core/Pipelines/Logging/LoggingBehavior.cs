@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
+using Yeg.Utilities.Extensions.Claims;
 using YEG.Core.CrossCuttingConcerns.Logging;
 using YEG.Core.CrossCuttingConcerns.Logging.Serilog;
 
@@ -32,10 +33,7 @@ namespace YEG.Core.Pipelines.Logging
             {
                 MethodName = next.Method.Name,
                 LogParameters = logParameters,
-                User = _httpContextAccessor.HttpContext == null ||
-                       _httpContextAccessor.HttpContext.User.Identity.Name == null
-                           ? "?"
-                           : _httpContextAccessor.HttpContext.User.Identity.Name
+                UserId = _httpContextAccessor.HttpContext?.User?.GetUserId().ToString() ?? "?"
             };
 
             _loggerServiceBase.Info(JsonSerializer.Serialize(logDetail));
